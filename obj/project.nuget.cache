@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fEsMpObtvDWJcANKrfG1NcPZmKJ1RT6N/o2ueOYYvs+D8sneGjTjRxf601j/ukqmREZ7XvCt88CDXd9OupI1dA==",
+  "dgSpecHash": "caWknhIhHq1ewn5moITh40PX2hMVVO5gSbIgwy1NPVnfeWEl5YgarpMXcN78UnBoxpV3AI62e1eoSKxjpJCbhg==",
   "success": true,
-  "projectFilePath": "D:\\Szkola\\Studia\\3 Semestr\\Programowanie obiektowe\\Projekt\\Projekt.csproj",
+  "projectFilePath": "D:\\Szkola\\Studia\\3 Semestr\\Programowanie obiektowe\\Projekt\\WebAPI-TextRPG\\Projekt.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Verth\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.2\\microsoft.aspnetcore.openapi.7.0.2.nupkg.sha512",
     "C:\\Users\\Verth\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",

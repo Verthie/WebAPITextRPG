@@ -465,11 +465,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Szkola\\Studia\\3 Semestr\\Programowanie obiektowe\\Projekt\\Projekt.csproj",
+      "projectUniqueName": "D:\\Szkola\\Studia\\3 Semestr\\Programowanie obiektowe\\Projekt\\WebAPI-TextRPG\\Projekt.csproj",
       "projectName": "Projekt",
-      "projectPath": "D:\\Szkola\\Studia\\3 Semestr\\Programowanie obiektowe\\Projekt\\Projekt.csproj",
+      "projectPath": "D:\\Szkola\\Studia\\3 Semestr\\Programowanie obiektowe\\Projekt\\WebAPI-TextRPG\\Projekt.csproj",
       "packagesPath": "C:\\Users\\Verth\\.nuget\\packages\\",
-      "outputPath": "D:\\Szkola\\Studia\\3 Semestr\\Programowanie obiektowe\\Projekt\\obj\\",
+      "outputPath": "D:\\Szkola\\Studia\\3 Semestr\\Programowanie obiektowe\\Projekt\\WebAPI-TextRPG\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Verth\\AppData\\Roaming\\NuGet\\NuGet.Config",
