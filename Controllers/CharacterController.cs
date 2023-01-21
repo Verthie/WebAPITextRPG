@@ -27,5 +27,12 @@ namespace WebAPITextRPG.Controllers
         {
             return Ok(characters.FirstOrDefault(c => c.Id == id)); //Returns the first character where the id of the characters equals the given ID
         }
+
+        [HttpPost] //POST method for creating a new character
+        public ActionResult<List<Character>> AddCharacter(Character newCharacter)
+        {
+            characters.Add(newCharacter);
+            return characters;
+        }
     }
 }
