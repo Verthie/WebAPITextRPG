@@ -2,11 +2,15 @@ global using WebAPITextRPG.Models;
 global using WebAPITextRPG.Services.CharacterService;
 global using WebAPITextRPG.Dtos.Character;
 global using AutoMapper;
+global using Microsoft.EntityFrameworkCore;
+global using WebAPITextRPG.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddDbContext<DataContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("DeafultConnection")));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
