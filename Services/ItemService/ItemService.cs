@@ -25,7 +25,7 @@ namespace WebAPITextRPG.Services.ItemService
             var serviceResponse = new ServiceResponse<List<GetItemDto>>(); //serviceResponse variable
             var item = _mapper.Map<Item>(newItem); //Item variable
             item.Id = items.Max(c => c.Id) + 1; //finding the max value of id and increasing it by one whenever a new item is added
-            items.Add(item); //creating a new character
+            items.Add(item); //creating a new item
             serviceResponse.Data = items.Select(c => _mapper.Map<GetItemDto>(c)).ToList(); //mapping response to DTO
             return serviceResponse; //sending the response to controller
         }
@@ -35,11 +35,11 @@ namespace WebAPITextRPG.Services.ItemService
             var serviceResponse = new ServiceResponse<List<GetItemDto>>();
             try //whenever we try to delete an item that doesn't exist we catch an exception and display a massage
             {
-                var character = items.FirstOrDefault(c => c.Id == id);
-                if (character is null) //checking if item doesn't exist 
+                var item = items.FirstOrDefault(c => c.Id == id);
+                if (item is null) //checking if item doesn't exist 
                     throw new Exception($"item with Id '{id}' not found."); //throwing an exception with a custom message
 
-                items.Remove(character); //deleting the item
+                items.Remove(item); //deleting the item
 
                 serviceResponse.Data = items.Select(c => _mapper.Map<GetItemDto>(c)).ToList(); //mapping response to DTO
             }
@@ -62,8 +62,8 @@ namespace WebAPITextRPG.Services.ItemService
         public async Task<ServiceResponse<GetItemDto>> GetItemById(int id) //Returning a single item by id
         {
             var serviceResponse = new ServiceResponse<GetItemDto>();
-            var character = items.FirstOrDefault(c => c.Id == id);
-            serviceResponse.Data = _mapper.Map<GetItemDto>(character); //mapping response to DTO
+            var item = items.FirstOrDefault(c => c.Id == id);
+            serviceResponse.Data = _mapper.Map<GetItemDto>(item); //mapping response to DTO
             return serviceResponse;
         }
 

@@ -50,7 +50,7 @@ namespace WebAPITextRPG.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<GetItemDto>>>> DeleteItemr(int id)
+        public async Task<ActionResult<ServiceResponse<List<GetItemDto>>>> DeleteItem(int id)
         {
             var response = await _itemService.DeleteItem(id);
             if (response.Data is null)

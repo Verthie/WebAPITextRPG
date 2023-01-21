@@ -3,6 +3,7 @@ global using WebAPITextRPG.Services.CharacterService;
 global using WebAPITextRPG.Dtos.Character;
 global using AutoMapper;
 using WebAPITextRPG.Services.ItemService;
+using WebAPITextRPG.Services.SpellService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<ISpellService, SpellService>();
 
 var app = builder.Build();
 

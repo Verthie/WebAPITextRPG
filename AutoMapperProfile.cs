@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPITextRPG.Dtos.Item;
+using WebAPITextRPG.Dtos.Spell;
 
 namespace WebAPITextRPG
 {
@@ -17,6 +18,10 @@ namespace WebAPITextRPG
             CreateMap<Item, GetItemDto>();
             CreateMap<AddItemDto, Item>();
             CreateMap<UpdateItemDto, Item>();
+
+            CreateMap<Spell, GetSpellDto>();
+            CreateMap<AddSpellDto, Spell>();
+            CreateMap<UpdateSpellDto, Spell>();
         }
     }
 }
