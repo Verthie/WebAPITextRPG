@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebAPITextRPG.Models;
-using WebAPITextRPG.Services.CharacterService;
 
 namespace WebAPITextRPG.Controllers
 {
@@ -20,24 +18,32 @@ namespace WebAPITextRPG.Controllers
         }
 
         [HttpGet("GetAll")] //Get method returning a list of all characters
-        public async Task<ActionResult<ServiceResponse<List<Character>>>> Get()
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
         {
             return Ok(await _characterService.GetAllCharacters());
         }
 
         [HttpGet("{id}")] //Get method returnig a single character using the id parameter
-        public async Task<ActionResult<ServiceResponse<Character>>> GetSingle(int id)
+        public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> GetSingle(int id)
         {
             return Ok(await _characterService.GetCharacterById(id)); //Returns the first character where the id of the characters equals the given ID
         }
 
         [HttpPost] //POST method for creating a new character
-        public async Task<ActionResult<ServiceResponse<List<Character>>>> AddCharacter(Character newCharacter)
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> AddCharacter(AddCharacterDto newCharacter)
         {
             return Ok(await _characterService.AddCharacter(newCharacter));
         }
+
+        [HttpPut] //PUT method for updating a character
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
+        {
+            var response = await _characterService.UpdateCharacter(updatedCharacter);
+            if (response.Data is null) //if character was not found return response as notfound (404)
+            {
+                return NotFound(response);
+            }
+            return Ok();
+        }
     }
-
-
-
 }
