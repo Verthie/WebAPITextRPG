@@ -1,31 +1,46 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace WebAPITextRPG.Services.CharacterService
 {
     public class CharacterService : ICharacterService
     {
+        private readonly IMapper _mapper;
+        private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public CharacterService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _context = context;
+            _mapper = mapper;
+        }
+
+        private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext!.User
+        .FindFirstValue(ClaimTypes.NameIdentifier)!);
+
         private static List<Character> characters = new List<Character> //creating a list of characters
         {
             new Character(), //adding a default character to the list
             new Character { Id = 1, Name = "Lunk"} //adding a character named "Lunk" with an id = 1 and the rest are default values
         };
-        private readonly IMapper _mapper;
-
-        public CharacterService(IMapper mapper)
-        {
-            _mapper = mapper;
-        }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter) //adding character method
         {
-            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>(); //serviceResponse variable
-            var character = _mapper.Map<Character>(newCharacter); //Character variable
-            character.Id = characters.Max(c => c.Id) + 1; //finding the max value of id and increasing it by one whenever a new character is added
-            characters.Add(character); //creating a new character
-            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList(); //mapping response to DTO
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            var character = _mapper.Map<Character>(newCharacter);
+            character.User = await _context.Users.FirstOrDefaultAsync(u => u.Id == GetUserId());
+
+            _context.Characters.Add(character); //creating a new character
+            await _context.SaveChangesAsync(); //writing changes to database and generating new ID for character
+            serviceResponse.Data =
+                await _context.Characters
+                    .Where(c => c.User!.Id == GetUserId()) //condition for displaying list of characters belonging only to one user
+                    .Select(c => _mapper.Map<GetCharacterDto>(c))
+                    .ToListAsync();
             return serviceResponse; //sending the response to controller
         }
 
@@ -34,35 +49,42 @@ namespace WebAPITextRPG.Services.CharacterService
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             try //whenever we try to delete a character that doesn't exist we catch an exception and display a massage
             {
-                var character = characters.FirstOrDefault(c => c.Id == id);
+                var character = await _context.Characters
+                    .FirstOrDefaultAsync(c => c.Id == id && c.User!.Id == GetUserId()); //choosing the character and its user by id, this allows to only delete characters that belong to their user
                 if (character is null) //checking if character doesn't exist 
                     throw new Exception($"Chracter with Id '{id}' not found."); //throwing an exception with a custom message
 
-                characters.Remove(character); //deleting the character
+                _context.Characters.Remove(character); //deleting the character
 
-                serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList(); //mapping response to DTO
+                await _context.SaveChangesAsync(); //writing changes to database
+
+                serviceResponse.Data = await _context.Characters
+                    .Where(c => c.User!.Id == GetUserId())
+                    .Select(c => _mapper.Map<GetCharacterDto>(c))
+                    .ToListAsync();
             }
             catch (Exception ex) //contents of exception
             {
-                serviceResponse.Success = false; //prompt saying signalising operation wasn't a success
+                serviceResponse.Success = false; //prompt signalising operation wasn't a success
                 serviceResponse.Message = ex.Message; //exception message
             }
 
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters() //Returning list of characters
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters() //Returning list of characters belonging to a single user
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList(); //mapping response to DTO
+            var dbCharacters = await _context.Characters.Where(c => c.User!.Id == GetUserId()).ToListAsync();
+            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
         }
 
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id) //Returning a single character by id
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            var character = characters.FirstOrDefault(c => c.Id == id);
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(character); //mapping response to DTO
+            var dbCharacter = await _context.Characters.FirstOrDefaultAsync(c => c.Id == id); //choosing the character by id
+            serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter); //mapping response to DTO
             return serviceResponse;
         }
 
@@ -72,11 +94,12 @@ namespace WebAPITextRPG.Services.CharacterService
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
             try //whenever we try to update a character that doesn't exist we catch an exception and display a massage
             {
-                var character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
-                if (character is null) //checking if character doesn't exist and throwing an exception with a custom message
+                var character =
+                    await _context.Characters
+                    .Include(c => c.User)
+                    .FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id);
+                if (character is null || character.User!.Id != GetUserId()) //checking if character doesn't exist and throwing an exception with a custom message
                     throw new Exception($"Chracter with Id '{updatedCharacter.Id}' not found.");
-
-                _mapper.Map(updatedCharacter, character); //mapping updated character to character
 
                 //values that are allowed to be updated
                 character.Name = updatedCharacter.Name;
@@ -86,7 +109,8 @@ namespace WebAPITextRPG.Services.CharacterService
                 character.Intelligence = updatedCharacter.Intelligence;
                 character.Class = updatedCharacter.Class;
 
-                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character); //mapping response to DTO
+                await _context.SaveChangesAsync();
+                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
             }
             catch (Exception ex)
             {
