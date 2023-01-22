@@ -12,6 +12,14 @@ namespace WebAPITextRPG
             CreateMap<Character, GetCharacterDto>();
             CreateMap<AddCharacterDto, Character>();
             CreateMap<UpdateCharacterDto, Character>();
+
+            CreateMap<Spells, GetSpellDto>();
+            CreateMap<AddSpellDto, Spells>();
+            CreateMap<UpdateSpellDto, Spells>();
+
+            CreateMap<Weapon, GetWeaponDto>();
+            CreateMap<AddWeaponDto, Weapon>();
+            CreateMap<UpdateWeaponDto, Weapon>();
         }
     }
 }
