@@ -12,7 +12,6 @@ namespace WebAPITextRPG.Models
         public string Name { get; set; } = "Fireball"; //Spell name - default is "Fireball"
 
         public int Damage { get; set; } = 1; // Spell damage - default is 1
-
-        public SpellSchool School { get; set; } = SpellSchool.Evocation; // Spell school - default is Evocation (List of all schools is in SpellSchool.cs in models)
+        public List<Character>? Characters { get; set; }
     }
 }

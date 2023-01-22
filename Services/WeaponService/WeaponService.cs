@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using WebAPITextRPG.Dtos.Weapon;
 
@@ -10,91 +11,51 @@ namespace WebAPITextRPG.Services.WeaponService
     {
         private readonly IMapper _mapper;
         private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public WeaponService(IMapper mapper, DataContext context)
+        public WeaponService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<GetWeaponDto>>> AddWeapon(AddWeaponDto newWeapon) //adding weapon method
+        public async Task<ServiceResponse<GetCharacterDto>> AddWeapon(AddWeaponDto newWeapon)
         {
-            var serviceResponse = new ServiceResponse<List<GetWeaponDto>>(); //serviceResponse variable
-            var weapon = _mapper.Map<Weapon>(newWeapon); //Weapon variable
-
-            _context.Weapons.Add(weapon); //creating a new weapon
-            await _context.SaveChangesAsync(); //writing changes to database and generating new ID for weapon
-            serviceResponse.Data =
-                await _context.Weapons.Select(c => _mapper.Map<GetWeaponDto>(c)).ToListAsync();
-            return serviceResponse; //sending the response to controller
-        }
-
-        public async Task<ServiceResponse<List<GetWeaponDto>>> DeleteWeapon(int id)
-        {
-            var serviceResponse = new ServiceResponse<List<GetWeaponDto>>();
-            try //whenever we try to delete an weapon that doesn't exist we catch an exception and display a massage
+            var response = new ServiceResponse<GetCharacterDto>();
+            try
             {
-                var weapon = await _context.Weapons.FirstOrDefaultAsync(c => c.Id == id); //choosing the weapon by id
-                if (weapon is null) //checking if weapon doesn't exist 
-                    throw new Exception($"weapon with Id '{id}' not found."); //throwing an exception with a custom message
+                var character = await _context.Characters
+                    .FirstOrDefaultAsync(c => c.Id == newWeapon.CharacterId &&
+                        c.User!.Id == int.Parse(_httpContextAccessor.HttpContext!.User
+                            .FindFirstValue(ClaimTypes.NameIdentifier)!));
 
-                _context.Weapons.Remove(weapon); //deleting the weapon
+                if (character is null)
+                {
+                    response.Success = false;
+                    response.Message = "Character not found.";
+                    return response;
+                }
 
-                await _context.SaveChangesAsync(); //writing changes to database
+                var weapon = new Weapon
+                {
+                    Name = newWeapon.Name,
+                    Damage = newWeapon.Damage,
+                    Character = character
+                };
 
-                serviceResponse.Data = await _context.Weapons.Select(c => _mapper.Map<GetWeaponDto>(c)).ToListAsync();
-            }
-            catch (Exception ex) //contents of exception
-            {
-                serviceResponse.Success = false; //prompt saying signalising operation wasn't a success
-                serviceResponse.Message = ex.Message; //exception message
-            }
+                _context.Weapons.Add(weapon);
+                await _context.SaveChangesAsync();
 
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<List<GetWeaponDto>>> GetAllWeapons() //Returning list of weapons
-        {
-            var serviceResponse = new ServiceResponse<List<GetWeaponDto>>();
-            var dbWeapons = await _context.Weapons.ToListAsync(); //getting all weapons from database
-            serviceResponse.Data = dbWeapons.Select(c => _mapper.Map<GetWeaponDto>(c)).ToList(); //mapping response to DTO
-            return serviceResponse;
-        }
-        
-        public async Task<ServiceResponse<GetWeaponDto>> GetWeaponById(int id) //Returning a single weapon by id
-        {
-            var serviceResponse = new ServiceResponse<GetWeaponDto>();
-            var dbWeapon = await _context.Weapons.FirstOrDefaultAsync(c => c.Id == id); //getting weapon from database
-            serviceResponse.Data = _mapper.Map<GetWeaponDto>(dbWeapon); //mapping response to DTO
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<GetWeaponDto>> UpdateWeapon(UpdateWeaponDto updatedWeapon)
-        {
-
-            var serviceResponse = new ServiceResponse<GetWeaponDto>();
-            try //whenever we try to update an weapon that doesn't exist we catch an exception and display a massage
-            {
-                var weapon =
-                    await _context.Weapons.FirstOrDefaultAsync(c => c.Id == updatedWeapon.Id); //choosing the weapon by id
-                if (weapon is null) // checking if weapon doesn't exist
-                    throw new Exception($"Weapon with Id '{updatedWeapon.Id}' not found."); //throwing an exception with a custom message
-
-                //values that are allowed to be updated
-                weapon.Name = updatedWeapon.Name;
-                weapon.Damage = updatedWeapon.Damage;
-                weapon.Type = updatedWeapon.Type;
-
-                await _context.SaveChangesAsync(); //writing changes to database
-                serviceResponse.Data = _mapper.Map<GetWeaponDto>(weapon); //mapping response to DTO
+                response.Data = _mapper.Map<GetCharacterDto>(character);
             }
             catch (Exception ex)
             {
-                serviceResponse.Success = false;
-                serviceResponse.Message = ex.Message;
+                response.Success = false;
+                response.Message = ex.Message;
             }
 
-            return serviceResponse;
+            return response;
         }
     }
 }

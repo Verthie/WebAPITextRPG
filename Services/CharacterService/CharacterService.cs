@@ -25,12 +25,6 @@ namespace WebAPITextRPG.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter) //adding character method
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            if (GetUserId() == 1) //checking if user is with id=1 -> is a host (GM), because he can't create his own characters 
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "Access denied";
-                return serviceResponse;
-            }
             var character = _mapper.Map<Character>(newCharacter);
             character.User = await _context.Users.FirstOrDefaultAsync(u => u.Id == GetUserId());
 
@@ -48,12 +42,6 @@ namespace WebAPITextRPG.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            if (GetUserId() == 1)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "Access denied";
-                return serviceResponse;
-            }
             try //whenever we try to delete a character that doesn't exist we catch an exception and display a massage
             {
                 var character = await _context.Characters
@@ -82,11 +70,10 @@ namespace WebAPITextRPG.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters() //Returning list of characters belonging to a single user
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            var dbCharacters = await _context.Characters.ToListAsync();
-            if (GetUserId() != 1) //GM can receive everone's characters 
-            {
-                dbCharacters = await _context.Characters.Where(c => c.User!.Id == GetUserId()).ToListAsync();
-            }
+            var dbCharacters = await _context.Characters
+                .Include(c => c.Weapon)
+                .Include(c => c.Spells)
+                .Where(c => c.User!.Id == GetUserId()).ToListAsync();
             serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
         }
@@ -94,7 +81,10 @@ namespace WebAPITextRPG.Services.CharacterService
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id) //Returning a single character by id
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            var dbCharacter = await _context.Characters.FirstOrDefaultAsync(c => c.Id == id); //choosing the character by id
+            var dbCharacter = await _context.Characters
+                .Include(c => c.Weapon)
+                .Include(c => c.Spells)
+                .FirstOrDefaultAsync(c => c.Id == id); //choosing the character by id
             serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter); //mapping response to DTO
             return serviceResponse;
         }
@@ -102,12 +92,6 @@ namespace WebAPITextRPG.Services.CharacterService
         public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            if (GetUserId() == 1)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "Access denied";
-                return serviceResponse;
-            }
             try //whenever we try to update a character that doesn't exist we catch an exception and display a massage
             {
                 var character =
@@ -135,6 +119,47 @@ namespace WebAPITextRPG.Services.CharacterService
             }
 
             return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<GetCharacterDto>> AddCharacterSpell(AddCharacterSpellDto newCharacterSpell)
+        {
+            var response = new ServiceResponse<GetCharacterDto>();
+            try
+            {
+                var character = await _context.Characters
+                    .Include(c => c.Weapon)
+                    .Include(c => c.Spells)
+                    .FirstOrDefaultAsync(c => c.Id == newCharacterSpell.CharacterId &&
+                    c.User!.Id == GetUserId());
+
+                if (character is null)
+                {
+                    response.Success = false;
+                    response.Message = "Character not found.";
+                    return response;
+                }
+
+                var spell = await _context.Spells
+                    .FirstOrDefaultAsync(s => s.Id == newCharacterSpell.SpellId);
+                if (spell is null)
+                {
+                    response.Success = false;
+                    response.Message = "Spell not found.";
+                    return response;
+                }
+
+                character.Spells!.Add(spell);
+                await _context.SaveChangesAsync();
+                response.Data = _mapper.Map<GetCharacterDto>(character);
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
     }
 }

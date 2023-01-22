@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPITextRPG.Data;
 
@@ -10,9 +11,11 @@ using WebAPITextRPG.Data;
 namespace Projekt.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230122210005_Spells")]
+    partial class Spells
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
@@ -41,13 +44,7 @@ namespace Projekt.Migrations
                     b.Property<int>("Class")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Defeats")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Defense")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Fights")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HitPoints")
@@ -64,9 +61,6 @@ namespace Projekt.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Victories")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -92,26 +86,6 @@ namespace Projekt.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Spells");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Damage = 30,
-                            Name = "Fireball"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Damage = 25,
-                            Name = "Blizzard"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Damage = 35,
-                            Name = "Thuderwave"
-                        });
                 });
 
             modelBuilder.Entity("WebAPITextRPG.Models.User", b =>

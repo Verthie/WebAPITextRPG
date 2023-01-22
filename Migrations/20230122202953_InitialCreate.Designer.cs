@@ -11,7 +11,7 @@ using WebAPITextRPG.Data;
 namespace Projekt.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230121220635_InitialCreate")]
+    [Migration("20230122202953_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -78,6 +78,30 @@ namespace Projekt.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("WebAPITextRPG.Models.Weapon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Damage")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterId")
+                        .IsUnique();
+
+                    b.ToTable("Weapons");
+                });
+
             modelBuilder.Entity("WebAPITextRPG.Models.Character", b =>
                 {
                     b.HasOne("WebAPITextRPG.Models.User", "User")
@@ -85,6 +109,22 @@ namespace Projekt.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebAPITextRPG.Models.Weapon", b =>
+                {
+                    b.HasOne("WebAPITextRPG.Models.Character", "Character")
+                        .WithOne("Weapon")
+                        .HasForeignKey("WebAPITextRPG.Models.Weapon", "CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Character");
+                });
+
+            modelBuilder.Entity("WebAPITextRPG.Models.Character", b =>
+                {
+                    b.Navigation("Weapon");
                 });
 
             modelBuilder.Entity("WebAPITextRPG.Models.User", b =>

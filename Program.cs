@@ -1,11 +1,12 @@
 global using WebAPITextRPG.Models;
 global using WebAPITextRPG.Services.CharacterService;
 global using WebAPITextRPG.Dtos.Character;
-global using WebAPITextRPG.Dtos.Spell;
 global using WebAPITextRPG.Dtos.Weapon;
 global using AutoMapper;
 global using Microsoft.EntityFrameworkCore;
 global using WebAPITextRPG.Data;
+global using WebAPITextRPG.Services.WeaponService;
+global using WebAPITextRPG.Services.FightService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Filters;
@@ -34,8 +35,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<ISpellService, SpellService>();
 builder.Services.AddScoped<IWeaponService, WeaponService>();
+builder.Services.AddScoped<IFightService, FightService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

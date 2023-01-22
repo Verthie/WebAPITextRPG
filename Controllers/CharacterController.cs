@@ -59,5 +59,11 @@ namespace WebAPITextRPG.Controllers
             }
             return Ok(response);
         }
+
+        [HttpPost("Spell")]
+        public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> AddCharacterSpell(AddCharacterSpellDto newCharacterSpell)
+        {
+            return Ok(await _characterService.AddCharacterSpell(newCharacterSpell));
+        }
     }
 }

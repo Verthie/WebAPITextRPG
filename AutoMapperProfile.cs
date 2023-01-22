@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPITextRPG.Dtos.Spell;
+using WebAPITextRPG.Dtos.Weapon;
 
 namespace WebAPITextRPG
 {
@@ -12,14 +14,8 @@ namespace WebAPITextRPG
             CreateMap<Character, GetCharacterDto>();
             CreateMap<AddCharacterDto, Character>();
             CreateMap<UpdateCharacterDto, Character>();
-
-            CreateMap<Spells, GetSpellDto>();
-            CreateMap<AddSpellDto, Spells>();
-            CreateMap<UpdateSpellDto, Spells>();
-
             CreateMap<Weapon, GetWeaponDto>();
-            CreateMap<AddWeaponDto, Weapon>();
-            CreateMap<UpdateWeaponDto, Weapon>();
+            CreateMap<Spell, GetSpellDto>();
         }
     }
 }

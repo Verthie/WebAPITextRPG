@@ -15,5 +15,10 @@ namespace WebAPITextRPG.Models
         public int Intelligence { get; set; } = 10; //Character Intelligence - default is 10
         public RpgClass Class { get; set; } = RpgClass.Mage; //Character Class - default is Mage (List of all classes is in RpgClass.cs in models)
         public User? User { get; set; }
+        public Weapon? Weapon { get; set; }
+        public List<Spell>? Spells { get; set; }
+        public int Fights { get; set; }
+        public int Victories { get; set; }
+        public int Defeats { get; set; }
     }
 }
