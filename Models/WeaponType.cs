@@ -3,7 +3,7 @@
 namespace WebAPITextRPG.Models
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum ItemType
+    public enum WeaponType
     {
         Sword = 1,
         Axe = 2,

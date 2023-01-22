@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "LE7h5MMVny40ZN1qzx5Rp6zXtqOxgX+4dPZg/tHoygd0u8xul8rhPiO1onUu/APXzX5486PWz7d0M2ClZoe5WA==",
+  "dgSpecHash": "2ihY6yNFgDaT0n4TDlx0q4ltdYZfH1+m0lZc7Q/JC8DElqJuESP55uwUaHiUV2NfbEzr6Z+9pPSEyjUEjmmuuA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-5\\Projekt.csproj",
+  "projectFilePath": "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-6\\Projekt.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\przem\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\przem\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
