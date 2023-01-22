@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-4\\Projekt.csproj": {}
+    "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-5\\Projekt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-4\\Projekt.csproj": {
+    "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-5\\Projekt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-4\\Projekt.csproj",
+        "projectUniqueName": "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-5\\Projekt.csproj",
         "projectName": "Projekt",
-        "projectPath": "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-4\\Projekt.csproj",
+        "projectPath": "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-5\\Projekt.csproj",
         "packagesPath": "C:\\Users\\przem\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-4\\obj\\",
+        "outputPath": "C:\\Users\\przem\\Documents\\GitHub\\WebAPITextRPG-5\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

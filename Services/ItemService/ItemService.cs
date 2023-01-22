@@ -8,15 +8,12 @@ namespace WebAPITextRPG.Services.ItemService
 {
     public class ItemService : IItemService
     {
-        private static List<Item> items = new List<Item> //creating a list of items
-        {
-            new Item(), //adding a default item to the list
-            new Item { Id = 1, Name = "Shortbow", Damage = 5, Type = ItemType.Bow} //adding a item named "Shortbow" with an id = 1, damage = 5 and type = Bow
-        };
         private readonly IMapper _mapper;
+        private readonly DataContext _context;
 
-        public ItemService(IMapper mapper)
+        public ItemService(IMapper mapper, DataContext context)
         {
+            _context = context;
             _mapper = mapper;
         }
 
@@ -24,9 +21,11 @@ namespace WebAPITextRPG.Services.ItemService
         {
             var serviceResponse = new ServiceResponse<List<GetItemDto>>(); //serviceResponse variable
             var item = _mapper.Map<Item>(newItem); //Item variable
-            item.Id = items.Max(c => c.Id) + 1; //finding the max value of id and increasing it by one whenever a new item is added
-            items.Add(item); //creating a new item
-            serviceResponse.Data = items.Select(c => _mapper.Map<GetItemDto>(c)).ToList(); //mapping response to DTO
+
+            _context.Items.Add(item); //creating a new item
+            await _context.SaveChangesAsync(); //writing changes to database and generating new ID for item
+            serviceResponse.Data =
+                await _context.Items.Select(c => _mapper.Map<GetItemDto>(c)).ToListAsync();
             return serviceResponse; //sending the response to controller
         }
 
@@ -35,13 +34,15 @@ namespace WebAPITextRPG.Services.ItemService
             var serviceResponse = new ServiceResponse<List<GetItemDto>>();
             try //whenever we try to delete an item that doesn't exist we catch an exception and display a massage
             {
-                var item = items.FirstOrDefault(c => c.Id == id);
+                var item = await _context.Items.FirstOrDefaultAsync(c => c.Id == id); //choosing the item by id
                 if (item is null) //checking if item doesn't exist 
                     throw new Exception($"item with Id '{id}' not found."); //throwing an exception with a custom message
 
-                items.Remove(item); //deleting the item
+                _context.Items.Remove(item); //deleting the item
 
-                serviceResponse.Data = items.Select(c => _mapper.Map<GetItemDto>(c)).ToList(); //mapping response to DTO
+                await _context.SaveChangesAsync(); //writing changes to database
+
+                serviceResponse.Data = await _context.Items.Select(c => _mapper.Map<GetItemDto>(c)).ToListAsync();
             }
             catch (Exception ex) //contents of exception
             {
@@ -55,15 +56,16 @@ namespace WebAPITextRPG.Services.ItemService
         public async Task<ServiceResponse<List<GetItemDto>>> GetAllItems() //Returning list of items
         {
             var serviceResponse = new ServiceResponse<List<GetItemDto>>();
-            serviceResponse.Data = items.Select(c => _mapper.Map<GetItemDto>(c)).ToList(); //mapping response to DTO
+            var dbItems = await _context.Items.ToListAsync(); //getting all items from database
+            serviceResponse.Data = dbItems.Select(c => _mapper.Map<GetItemDto>(c)).ToList(); //mapping response to DTO
             return serviceResponse;
         }
-
+        
         public async Task<ServiceResponse<GetItemDto>> GetItemById(int id) //Returning a single item by id
         {
             var serviceResponse = new ServiceResponse<GetItemDto>();
-            var item = items.FirstOrDefault(c => c.Id == id);
-            serviceResponse.Data = _mapper.Map<GetItemDto>(item); //mapping response to DTO
+            var dbItem = await _context.Items.FirstOrDefaultAsync(c => c.Id == id); //getting item from database
+            serviceResponse.Data = _mapper.Map<GetItemDto>(dbItem); //mapping response to DTO
             return serviceResponse;
         }
 
@@ -73,17 +75,17 @@ namespace WebAPITextRPG.Services.ItemService
             var serviceResponse = new ServiceResponse<GetItemDto>();
             try //whenever we try to update an item that doesn't exist we catch an exception and display a massage
             {
-                var item = items.FirstOrDefault(c => c.Id == updatedItem.Id);
-                if (item is null) //checking if item doesn't exist and throwing an exception with a custom message
-                    throw new Exception($"Item with Id '{updatedItem.Id}' not found.");
-
-                _mapper.Map(updatedItem, item); //mapping updated item to item
+                var item =
+                    await _context.Items.FirstOrDefaultAsync(c => c.Id == updatedItem.Id); //choosing the item by id
+                if (item is null) // checking if item doesn't exist
+                    throw new Exception($"Item with Id '{updatedItem.Id}' not found."); //throwing an exception with a custom message
 
                 //values that are allowed to be updated
                 item.Name = updatedItem.Name;
                 item.Damage = updatedItem.Damage;
                 item.Type = updatedItem.Type;
 
+                await _context.SaveChangesAsync(); //writing changes to database
                 serviceResponse.Data = _mapper.Map<GetItemDto>(item); //mapping response to DTO
             }
             catch (Exception ex)
