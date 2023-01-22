@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebAPITextRPG.Dtos.Item;
 using WebAPITextRPG.Dtos.Weapon;
 
 namespace WebAPITextRPG.Services.WeaponService
@@ -23,10 +22,10 @@ namespace WebAPITextRPG.Services.WeaponService
             var serviceResponse = new ServiceResponse<List<GetWeaponDto>>(); //serviceResponse variable
             var weapon = _mapper.Map<Weapon>(newWeapon); //Weapon variable
 
-            _context.Items.Add(weapon); //creating a new weapon
+            _context.Weapons.Add(weapon); //creating a new weapon
             await _context.SaveChangesAsync(); //writing changes to database and generating new ID for weapon
             serviceResponse.Data =
-                await _context.Items.Select(c => _mapper.Map<GetWeaponDto>(c)).ToListAsync();
+                await _context.Weapons.Select(c => _mapper.Map<GetWeaponDto>(c)).ToListAsync();
             return serviceResponse; //sending the response to controller
         }
 
