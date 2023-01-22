@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace WebAPITextRPG.Services.CharacterService
@@ -9,22 +10,37 @@ namespace WebAPITextRPG.Services.CharacterService
     {
         private readonly IMapper _mapper;
         private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CharacterService(IMapper mapper, DataContext context)
+        public CharacterService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
             _mapper = mapper;
         }
 
+        private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext!.User
+        .FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        private static List<Character> characters = new List<Character> //creating a list of characters
+        {
+            new Character(), //adding a default character to the list
+            new Character { Id = 1, Name = "Lunk"} //adding a character named "Lunk" with an id = 1 and the rest are default values
+        };
+
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter) //adding character method
         {
-            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>(); //serviceResponse variable
-            var character = _mapper.Map<Character>(newCharacter); //Character variable
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            var character = _mapper.Map<Character>(newCharacter);
+            character.User = await _context.Users.FirstOrDefaultAsync(u => u.Id == GetUserId());
 
             _context.Characters.Add(character); //creating a new character
             await _context.SaveChangesAsync(); //writing changes to database and generating new ID for character
             serviceResponse.Data =
-                await _context.Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToListAsync();
+                await _context.Characters
+                    .Where(c => c.User!.Id == GetUserId()) //condition for displaying list of characters belonging only to one user
+                    .Select(c => _mapper.Map<GetCharacterDto>(c))
+                    .ToListAsync();
             return serviceResponse; //sending the response to controller
         }
 
@@ -33,7 +49,8 @@ namespace WebAPITextRPG.Services.CharacterService
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             try //whenever we try to delete a character that doesn't exist we catch an exception and display a massage
             {
-                var character = await _context.Characters.FirstOrDefaultAsync(c => c.Id == id); //choosing the character by id
+                var character = await _context.Characters
+                    .FirstOrDefaultAsync(c => c.Id == id && c.User!.Id == GetUserId()); //choosing the character and its user by id, this allows to only delete characters that belong to their user
                 if (character is null) //checking if character doesn't exist 
                     throw new Exception($"Chracter with Id '{id}' not found."); //throwing an exception with a custom message
 
@@ -41,7 +58,10 @@ namespace WebAPITextRPG.Services.CharacterService
 
                 await _context.SaveChangesAsync(); //writing changes to database
 
-                serviceResponse.Data = await _context.Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToListAsync();
+                serviceResponse.Data = await _context.Characters
+                    .Where(c => c.User!.Id == GetUserId())
+                    .Select(c => _mapper.Map<GetCharacterDto>(c))
+                    .ToListAsync();
             }
             catch (Exception ex) //contents of exception
             {
@@ -52,10 +72,10 @@ namespace WebAPITextRPG.Services.CharacterService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters() //Returning list of characters
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters() //Returning list of characters belonging to a single user
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            var dbCharacters = await _context.Characters.ToListAsync();
+            var dbCharacters = await _context.Characters.Where(c => c.User!.Id == GetUserId()).ToListAsync();
             serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
         }
@@ -75,8 +95,10 @@ namespace WebAPITextRPG.Services.CharacterService
             try //whenever we try to update a character that doesn't exist we catch an exception and display a massage
             {
                 var character =
-                    await _context.Characters.FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id);
-                if (character is null) //checking if character doesn't exist and throwing an exception with a custom message
+                    await _context.Characters
+                    .Include(c => c.User)
+                    .FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id);
+                if (character is null || character.User!.Id != GetUserId()) //checking if character doesn't exist and throwing an exception with a custom message
                     throw new Exception($"Chracter with Id '{updatedCharacter.Id}' not found.");
 
                 //values that are allowed to be updated
@@ -88,7 +110,7 @@ namespace WebAPITextRPG.Services.CharacterService
                 character.Class = updatedCharacter.Class;
 
                 await _context.SaveChangesAsync();
-                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character); //mapping response to DTO
+                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
             }
             catch (Exception ex)
             {
