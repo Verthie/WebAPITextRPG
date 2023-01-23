@@ -28,15 +28,16 @@
 
 ## Przykłady użycia:
 W celu wyświetlenia listy postaci nalężących do użytkownika "testuser" należy wykonać podane kroki:
-1. wykorzystać metodę /Auth/Login do zalogowania użytkownika dane logowania to: username: "testuser", password: "123456"
-2. pobrać token (data: {token}) z odpowiedzi wysłanej przez metodę i przeprowadzić autoryzację poprzez wpisanie "bearer {token}"
+1. wykorzystać metodę /Auth/Login do zalogowania użytkownika - dane logowania to: username: "testuser", password: "123456"
+2. pobrać token z odpowiedzi wysłanej przez metodę (data: {token}) i przeprowadzić autoryzację poprzez wpisanie "bearer {token}" w formularzu autoryzacji
 3. wykorzystać metodę /api/Character/GetAll w celu pozyskania listy postaci nalężących do użytkownika
 
 Wynik takiej operacji
 <img src="/Images/Wyświetlanie postaci Swagger.png">
 
 W celu symulacji bitwy pomiędzy postaciami należy wykonać podane kroki:
-1. wykorzystać metodę /Fight oraz podać listę Id postaci, które mają stoczyć walkę
+1. wykorzystać metodę /Fight
+2. podać listę Id postaci, które mają stoczyć walkę
 
 Przykładowy wynik takiej operacji dla postaci o Id: 1,3,6
 <img src="/Images/Symulacja walki.png">
