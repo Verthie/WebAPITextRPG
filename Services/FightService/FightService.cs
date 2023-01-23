@@ -89,7 +89,6 @@ namespace WebAPITextRPG.Services.FightService
 
                         if (opponent.HitPoints <= 0 && !AlreadyDefeated.Contains(opponent)) //if opponent has health lower or equal than 0 and is not already defeated
                         {
-                            attacker.Victories++;
                             opponent.Defeats++;
                             response.Data.Log.Add($"{opponent.Name} has been defeated by {attacker.Name}!");
                             defeatedcount++;
@@ -98,6 +97,7 @@ namespace WebAPITextRPG.Services.FightService
 
                         if (defeatedcount == opponents.Count())
                         {
+                            attacker.Victories++;
                             response.Data.Log.Add($"{attacker.Name} wins with {attacker.HitPoints} HP left!");
                             defeated = true;
                             break;
