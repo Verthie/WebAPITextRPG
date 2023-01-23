@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPITextRPG.Dtos.Fight;
 using WebAPITextRPG.Dtos.Spell;
 using WebAPITextRPG.Dtos.Weapon;
 
@@ -16,6 +17,7 @@ namespace WebAPITextRPG
             CreateMap<UpdateCharacterDto, Character>();
             CreateMap<Weapon, GetWeaponDto>();
             CreateMap<Spell, GetSpellDto>();
+            CreateMap<Character, HighscoreDto>();
         }
     }
 }
