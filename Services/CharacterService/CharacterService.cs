@@ -103,7 +103,7 @@ namespace WebAPITextRPG.Services.CharacterService
 
                 //values that are allowed to be updated
                 character.Name = updatedCharacter.Name;
-                character.HitPoints = updatedCharacter.HitPoints;
+                //character.HitPoints = updatedCharacter.HitPoints;
                 character.Strength = updatedCharacter.Strength;
                 character.Defense = updatedCharacter.Defense;
                 character.Intelligence = updatedCharacter.Intelligence;

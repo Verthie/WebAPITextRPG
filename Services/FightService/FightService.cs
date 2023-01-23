@@ -104,12 +104,6 @@ namespace WebAPITextRPG.Services.FightService
                         }
                     }
                 }
-                /*
-                foreach (var character in AllDefeated)
-                {
-                    characters.Add(character);
-                }
-                */
 
                 characters.ForEach(c =>
                 {
@@ -153,7 +147,10 @@ namespace WebAPITextRPG.Services.FightService
                 int damage = DoSpellAttack(attacker, opponent, spell);
 
                 if (opponent.HitPoints <= 0)
-                    response.Message = $"{opponent.Name} has been defeated!";
+                {
+                    response.Message = $"{opponent.Name} has been defeated! Hitpoints are restored!";
+                    opponent.HitPoints = 100;
+                }
 
                 await _context.SaveChangesAsync();
 
@@ -203,7 +200,11 @@ namespace WebAPITextRPG.Services.FightService
                 int damage = DoWeaponAttack(attacker, opponent);
 
                 if (opponent.HitPoints <= 0)
-                    response.Message = $"{opponent.Name} has been defeated!";
+                {
+                    response.Message = $"{opponent.Name} has been defeated! Hitpoints are restored!";
+                    opponent.HitPoints = 100;
+                }
+
 
                 await _context.SaveChangesAsync();
 
