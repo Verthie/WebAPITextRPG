@@ -24,7 +24,7 @@
 - Wyniki wszystkich postaci posortowane względem ilości zwycięstw oraz walk również mogą zostać wyświetlone
 - Wszystkie metody GET, POST, PUT, DELETE dla broni jak i postaci wymagają autoryzacji
 - Natomiast symulowanie walk pomiędzy postaciami oraz wyświetlanie tabeli wyników nie wymaga autoryzacji
-- W bazie znajduje się obecnie 9 postaci (id 1-9), 9 broni przypisanych każdej postaci (id 1-9), 4 czary (id 1-4) oraz 3 użytkowników (id1-3)
+- W bazie znajduje się obecnie 9 postaci (id 1-9), 9 broni przypisanych każdej postaci (id 1-9), 4 czary (id 1-4) oraz 3 użytkowników (id 1-3)
 
 ## Przykłady użycia:
 W celu wyświetlenia listy postaci nalężących do użytkownika "testuser" należy wykonać podane kroki:
