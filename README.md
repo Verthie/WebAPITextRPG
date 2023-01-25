@@ -21,7 +21,7 @@
 - Postacie mogą brać udział w walkach pomiędzy sobą jeden na jednego albo w większej ilości
 - Wszystkie wykonywane ataki wyświetlane są w postaci tekstowej opisującej postać atakującą, postać atakowaną oraz ilość zadanych obrażeń
 - Ostatnia osoba która zwycięży otrzymuje punkt zwycięstwa ci którzy polegli otrzymują punkt przegranej
-- Wyniki wszystkich postaci posortowane są względem ilości zwycięstw oraz walk również mogą zostać wyświetlone
+- Wyniki wszystkich postaci posortowane są względem ilości zwycięstw oraz walk
 - Wszystkie metody GET, POST, PUT, DELETE dla broni jak i postaci wymagają autoryzacji
 - Natomiast symulowanie walk pomiędzy postaciami oraz wyświetlanie tabeli wyników nie wymaga autoryzacji
 - W bazie znajduje się obecnie 9 postaci (id 1-9), 9 broni przypisanych każdej postaci (id 1-9), 4 czary (id 1-4) oraz 3 użytkowników (id 1-3)
