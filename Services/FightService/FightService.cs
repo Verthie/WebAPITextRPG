@@ -80,30 +80,32 @@ namespace WebAPITextRPG.Services.FightService
                         {
                             response.Data.Log
                                 .Add($"{attacker.Name} attacks {opponent.Name} using {attackUsed} with {(damage >= 0 ? damage : 0)} damage");
+
+                            if (damage >= 100)
+                            {
+                                response.Data.Log.Add($"{attacker.Name} is godlike!");
+                            }
+                            else if (damage >= 75)
+                            {
+                                response.Data.Log.Add($"Critical strike by {attacker.Name}!");
+                            }
+                            else if (damage >= 50)
+                            {
+                                response.Data.Log.Add($"That's a lot of damage by {attacker.Name}!");
+                            }
                         }
                         else if (AlreadyDefeated.Contains(opponent) && !AlreadyDefeated.Contains(attacker))
                         {
                             response.Data.Log
                                 .Add($"{attacker.Name} attacks {opponent.Name}'s corpse with {attackUsed}, what an outstanding move!");
                         }
-                          
+
                         if (opponent.HitPoints <= 0 && !AlreadyDefeated.Contains(opponent)) //if opponent has health lower or equal than 0 and is not already defeated
                         {
                             opponent.Defeats++;
                             response.Data.Log.Add($"{opponent.Name} has been defeated by {attacker.Name}!");
                             defeatedcount++;
                             AlreadyDefeated.Add(opponent);
-                        }
-
-                        if (damage >= 100)
-                        {
-                            response.Data.Log.Add($"{attacker.Name} is godlike!");
-                        }if (damage >= 75)
-                        {
-                            response.Data.Log.Add($"Critical strike by {attacker.Name}!");
-                        }else if (damage >= 50)
-                        {
-                            response.Data.Log.Add($"That's a lot of damage by {attacker.Name}!");
                         }
 
                         if (defeatedcount == opponents.Count())
