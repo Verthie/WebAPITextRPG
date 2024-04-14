@@ -10,7 +10,7 @@
 - Walidacja Danych
 - Obsługa wyjątków
 - Połączenie z relacyjną bazą danych w technologii SQLite - 1 relacja jeden-do-jednego, 1 relacja jeden-do-wielu, 1 relacja wiele-do-wielu
-- Zostały wykonane testy API w Postman - 4 przykładowe testy zostały zaprezentowane na końcu dokumentu
+- Zostały wykonane wywołania API w Postman - 4 przykładowe wywołania zostały zaprezentowane na końcu dokumentu
 
 ## Założenia i zasady działania projektu:
 - Projektem jest symulacja tekstowego RPG
@@ -42,7 +42,7 @@ W celu symulacji bitwy pomiędzy postaciami należy wykonać podane kroki:
 Przykładowy wynik takiej operacji dla postaci o Id: 1,3,6
 <img src="/Images/Symulacja walki.png">
 
-## Testy wykonane w Postman:
+## Wywołania wykonane w Postman:
  Wyświetlanie tabeli wyników (nie wymaga autoryzacji):
 <img src="/Images/Wyświetlanie tabeli wyników Postman - test bez autoryzacji.png">
 
