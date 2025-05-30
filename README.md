@@ -66,8 +66,8 @@ Projekt Web API tekstowego RPG napisanego w C# .NET. Umożliwia rejestrację uż
 
 1. **Sklonuj repozytorium:**
 ```bash
-git clone https://github.com/twoj-user/twoj-projekt.git
-cd twoj-projekt
+git clone https://github.com/Verthie/WebAPITextRPG.git
+cd WebAPITextRPG
 ```
 
 2. **Uruchom aplikację:**
