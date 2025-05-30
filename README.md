@@ -1,56 +1,75 @@
 # WebAPI TextRPG
- Projekt Web API - Programowanie obiektowe
- 
-## Elementy Zawarte w projekcie:
-- 4 kontrolery
-- CRUD
-- Modele DTO
-- Baza danych w JSON
-- Interfejsy do pobierania danych
-- Walidacja Danych
-- Obsługa wyjątków
-- Połączenie z relacyjną bazą danych w technologii SQLite - 1 relacja jeden-do-jednego, 1 relacja jeden-do-wielu, 1 relacja wiele-do-wielu
-- Zostały wykonane wywołania API w Postman - 4 przykładowe wywołania zostały zaprezentowane na końcu dokumentu
+Projekt Web API tekstowego RPG napisanego w C# .NET. Umożliwia rejestrację użytkowników, zarządzanie postaciami, ekwipunkiem i symulację walk. Wykorzystuje SQLite, DTO, autoryzację JWT oraz relacyjne powiązania w bazie danych.
 
-## Założenia i zasady działania projektu:
-- Projektem jest symulacja tekstowego RPG
-- Całość została wykonana w technologii C# .NET
-- Program umożliwia użytkownikowi rejestrację i logowanie z wykorzystaniem autoryzacji i szyfrowania haseł
-- Aspektem głównym programu jest wyświetlanie, tworzenie, modyfikowanie i usuwanie postaci użytkownika (relacja jeden-do-wielu)
-- Postaciom można przypisywać broń (relacja jeden-do-jednego) jak i czary (relacja wiele-do-wielu)
-- Postacie mogą brać udział w walkach pomiędzy sobą jeden na jednego albo w większej ilości
-- Wszystkie wykonywane ataki wyświetlane są w postaci tekstowej opisującej postać atakującą, postać atakowaną oraz ilość zadanych obrażeń
-- Ostatnia osoba która zwycięży otrzymuje punkt zwycięstwa ci którzy polegli otrzymują punkt przegranej
-- Wyniki wszystkich postaci posortowane są względem ilości zwycięstw oraz walk
-- Wszystkie metody GET, POST, PUT, DELETE dla broni jak i postaci wymagają autoryzacji
-- Natomiast symulowanie walk pomiędzy postaciami oraz wyświetlanie tabeli wyników nie wymaga autoryzacji
-- W bazie znajduje się obecnie 9 postaci (id 1-9), 9 broni przypisanych każdej postaci (id 1-9), 4 czary (id 1-4) oraz 3 użytkowników (id 1-3)
+## Funkcje
+- Rejestracja i logowanie użytkowników z autoryzacją JWT
+- Operacje CRUD na postaciach, broni i czarach zabezpieczone autoryzacją
+- Symulacja walk 1v1 i grupowych między postaciami
+- Przechowywanie danych w SQLite (relacje 1:1, 1:N, N:M)
+- System zwycięstw i rankingów
+- Walidacja danych, obsługa wyjątków
 
-## Przykłady użycia:
-W celu wyświetlenia listy postaci nalężących do użytkownika "testuser" należy wykonać podane kroki:
-1. wykorzystać metodę /Auth/Login do zalogowania użytkownika - dane logowania to: username: "testuser", password: "123456"
-2. pobrać token z odpowiedzi wysłanej przez metodę (data: {token}) i przeprowadzić autoryzację poprzez wpisanie "bearer {token}" w formularzu autoryzacji
-3. wykorzystać metodę /api/Character/GetAll w celu pozyskania listy postaci nalężących do użytkownika
+## Dostępne Endpointy
 
-Wynik takiej operacji
+### 🔐 AuthController (`/Auth`)
+- `POST /Register` – Rejestracja użytkownika
+- `POST /Login` – Logowanie użytkownika
+
+### 🧍 CharacterController (`/api/Character`) – wymaga autoryzacji
+- `GET /GetAll` – Pobierz wszystkie postacie użytkownika
+- `GET /{id}` – Pobierz jedną postać po ID
+- `POST /` – Dodaj nową postać
+- `PUT /` – Zaktualizuj istniejącą postać
+- `DELETE /{id}` – Usuń postać
+- `POST /Spell` – Przypisz czar do postaci
+
+### ⚔️ FightController (`/Fight`)
+- `POST /` – Rozpocznij walkę (lista postaci)
+- `POST /Weapon` – Atak bronią
+- `POST /Spell` – Atak czarem
+- `GET /Highscore` – Pobierz ranking postaci
+
+### 🗡️ WeaponController (`/Weapon`) – wymaga autoryzacji
+- `POST /` – Dodaj broń do postaci
+
+## Jak używać
+1. Zaloguj się przez `/Auth/Login` (testowy użytkownik: `testuser`, hasło: `123456`)
+2. Uzyskaj token JWT z odpowiedzi
+3. Dodaj `Bearer {token}` do nagłówka autoryzacji
+4. Używaj endpointów, np. `/api/Character/GetAll`
+
+### Przykład odpowiedzi
 <img src="/Images/Wyświetlanie postaci Swagger.png">
 
-W celu symulacji bitwy pomiędzy postaciami należy wykonać podane kroki:
-1. wykorzystać metodę /Fight
-2. podać listę Id postaci, które mają stoczyć walkę
+## Technologie
+- ASP.NET Core Web API (.NET 7+)
+- SQLite
+- Entity Framework Core
+- DTO, automatyczne mapowanie danych
+- JWT (JSON Web Tokens)
 
-Przykładowy wynik takiej operacji dla postaci o Id: 1,3,6
-<img src="/Images/Symulacja walki.png">
+## Uruchamianie aplikacji
 
-## Wywołania wykonane w Postman:
- Wyświetlanie tabeli wyników (nie wymaga autoryzacji):
-<img src="/Images/Wyświetlanie tabeli wyników Postman - test bez autoryzacji.png">
+### Wymagania
+- .NET 7 SDK lub nowszy: https://dotnet.microsoft.com/download
+- Visual Studio 2022+ lub edytor wspierający .NET (np. Rider, VS Code)
 
-Logowanie użytkownika (nie wymaga autoryzacji):
-<img src="/Images/Logowanie użytkownika Postman - test bez autoryzacji.png">
+### Kroki:
 
-Wyświetlanie listy postaci nalężących do danego użytkownika (wymaga autoryzacji):
-<img src="/Images/Wyświetlanie listy postaci należących do użytkownika - test wymagający autoryzacji.png">
+1. **Sklonuj repozytorium:**
+```bash
+git clone https://github.com/twoj-user/twoj-projekt.git
+cd twoj-projekt
+```
 
-Tworzenie postaci przypisanej do użytkownika (wymaga autoryzacji):
-<img src="/Images/Tworzenie postaci przez użytkownika - test wymagający autoryzacji.png">
+2. **Uruchom aplikację:**
+```bash
+dotnet run
+```
+
+3. **Otwórz dokumentację Swagger:**
+Aplikacja domyślnie uruchamia się pod https://localhost:5001/swagger
+
+## Licencja
+
+Projekt edukacyjny – do swobodnego użytku, edycji i rozbudowy.
