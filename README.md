@@ -1,6 +1,14 @@
 # WebAPI TextRPG
 Projekt Web API tekstowego RPG napisanego w C# .NET. Umożliwia rejestrację użytkowników, zarządzanie postaciami, ekwipunkiem i symulację walk. Wykorzystuje SQLite, DTO, autoryzację JWT oraz relacyjne powiązania w bazie danych.
 
+## Spis treści
+
+- [Funkcje](#-funkcje)
+- [Dostępne endpointy](#-dostępne-endpointy)
+- [Jak używać](#-jak-używać)
+- [Technologie](#-technologie)
+- [Uruchamianie aplikacji](#-uruchamianie-aplikacji)
+
 ## Funkcje
 - Rejestracja i logowanie użytkowników z autoryzacją JWT
 - Operacje CRUD na postaciach, broni i czarach zabezpieczone autoryzacją
@@ -9,7 +17,7 @@ Projekt Web API tekstowego RPG napisanego w C# .NET. Umożliwia rejestrację uż
 - System zwycięstw i rankingów
 - Walidacja danych, obsługa wyjątków
 
-## Dostępne Endpointy
+## Dostępne endpointy
 
 ### 🔐 AuthController (`/Auth`)
 - `POST /Register` – Rejestracja użytkownika
@@ -39,7 +47,7 @@ Projekt Web API tekstowego RPG napisanego w C# .NET. Umożliwia rejestrację uż
 4. Używaj endpointów, np. `/api/Character/GetAll`
 
 ### Przykład odpowiedzi
-<img src="/Images/Wyświetlanie postaci Swagger.png">
+<img width=900px src="/Images/Wyświetlanie postaci Swagger.png">
 
 ## Technologie
 - ASP.NET Core Web API (.NET 7+)
