@@ -3,11 +3,11 @@ Projekt Web API tekstowego RPG napisanego w C# .NET. Umożliwia rejestrację uż
 
 ## Spis treści
 
-- [Funkcje](#-funkcje)
-- [Dostępne endpointy](#-dostępne-endpointy)
-- [Jak używać](#-jak-używać)
-- [Technologie](#-technologie)
-- [Uruchamianie aplikacji](#-uruchamianie-aplikacji)
+- [Funkcje](#funkcje)
+- [Dostępne endpointy](#dostępne-endpointy)
+- [Jak używać](#jak-używać)
+- [Technologie](#technologie)
+- [Uruchamianie aplikacji](#uruchamianie-aplikacji)
 
 ## Funkcje
 - Rejestracja i logowanie użytkowników z autoryzacją JWT
