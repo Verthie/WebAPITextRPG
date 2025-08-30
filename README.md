@@ -72,6 +72,7 @@ cd WebAPITextRPG
 
 2. **Uruchom aplikację:**
 ```bash
+dotnet restore
 dotnet run
 ```
 
